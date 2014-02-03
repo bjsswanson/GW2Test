@@ -21,6 +21,7 @@ public class BuyerService {
 	public static final int MAX_BUY_PRICE = 10000;
 	public static final int COUNT = 3;
 	public static final int ADD_BUY_PRICE = 20;
+	public static final String DONE = "Done.";
 	@Autowired
 	HttpClientFactory httpClientFactory;
 
@@ -52,7 +53,7 @@ public class BuyerService {
 			buyFromJson(session, json);
 		}
 
-		return StringUtils.EMPTY;
+		return DONE;
 	}
 
 	public String buyWeaponMasterWork15to20(String session) throws IOException {
@@ -62,7 +63,7 @@ public class BuyerService {
 			buyFromJson(session, json);
 		}
 
-		return StringUtils.EMPTY;
+		return DONE;
 	}
 
 	private void buyFromJson(String session, String json) throws IOException {
