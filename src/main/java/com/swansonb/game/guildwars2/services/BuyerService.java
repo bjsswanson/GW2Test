@@ -4,6 +4,7 @@ import com.google.gson.*;
 import com.swansonb.game.guildwars2.factory.HttpClientFactory;
 import com.swansonb.game.guildwars2.factory.HttpRequestFactory;
 import com.swansonb.game.guildwars2.utils.GWConstants;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -30,9 +31,12 @@ public class BuyerService {
 		this.gson = new Gson();
 	}
 
-	public JsonObject getArmorListing(String session) throws IOException {
-		String json = executeRequest(httpRequestFactory.getListing(session, GWConstants.ARMOR, GWConstants.MASTERWORK, 15, 20));
-		return new JsonParser().parse(json).getAsJsonObject();
+	public String getArmorMasterWork15to20(String session) throws IOException {
+		if(StringUtils.isNotBlank(session)){
+			return executeRequest(httpRequestFactory.getListing(session, GWConstants.ARMOR, GWConstants.MASTERWORK, 15, 20));
+		}
+
+		return StringUtils.EMPTY;
 	}
 
 	public JsonObject buyArmor(String session, JsonObject listing, int coins, int amount) {
