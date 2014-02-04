@@ -26,6 +26,18 @@ public class BuyerController {
 		return buyerService.getArmorMasterWork15to20(TEMP_SESSION).toString();
 	}
 
+	@RequestMapping(value = "/buy", method = RequestMethod.GET,
+			produces = "application/json; charset=utf-8")
+	public @ResponseBody String buyArmor(
+			@RequestParam String session,
+	        @RequestParam int type,
+	        @RequestParam int rarity,
+	        @RequestParam int min_level,
+	        @RequestParam int max_level,
+	        @RequestParam int coins) throws IOException {
+		return buyerService.buy(session, type, rarity, min_level, max_level, coins);
+	}
+
 	@RequestMapping(value = "/buyArmor", method = RequestMethod.GET,
 			produces = "application/json; charset=utf-8")
 	public @ResponseBody String buyArmor() throws IOException {

@@ -22,6 +22,7 @@ public class BuyerService {
 	public static final int COUNT = 3;
 	public static final int ADD_BUY_PRICE = 20;
 	public static final String DONE = "Done.";
+	private static final String MISSING_SESSION = "Missing Session";
 	@Autowired
 	HttpClientFactory httpClientFactory;
 
@@ -37,40 +38,45 @@ public class BuyerService {
 	public String getArmorMasterWork15to20(String session) throws IOException {
 		if(StringUtils.isNotBlank(session)){
 			return executeRequest(httpRequestFactory.getListing(session, GWConstants.ARMOR, GWConstants.MASTERWORK, 15, 20));
+		} else {
+			return MISSING_SESSION;
 		}
-
-		return StringUtils.EMPTY;
 	}
 
-	public String buyTest(String session) throws IOException {
-		return executeRequest(httpRequestFactory.buyItem(session, 4231, 1, 1400));
+	public String buy(String session, int type, int rarity, int min_level, int max_level, int coins) throws IOException {
+		if(StringUtils.isNotBlank(session)){
+			String json = executeRequest(httpRequestFactory.getListing(session, type, rarity, min_level, max_level));
+			return buyFromJson(session, json, coins);
+		} else {
+			return MISSING_SESSION;
+		}
 	}
 
 	public String buyArmorMasterWork15to20(String session) throws IOException {
 		if(StringUtils.isNotBlank(session)){
-
 			String json = executeRequest(httpRequestFactory.getListing(session, GWConstants.ARMOR, GWConstants.MASTERWORK, 15, 20));
-			buyFromJson(session, json);
+			return buyFromJson(session, json, Integer.MAX_VALUE);
+		} else {
+			return MISSING_SESSION;
 		}
-
-		return DONE;
 	}
 
 	public String buyWeaponMasterWork15to20(String session) throws IOException {
 		if(StringUtils.isNotBlank(session)){
-
 			String json = executeRequest(httpRequestFactory.getListing(session, GWConstants.WEAPON, GWConstants.MASTERWORK, 15, 20));
-			buyFromJson(session, json);
+			return buyFromJson(session, json, Integer.MAX_VALUE);
+		} else {
+			return MISSING_SESSION;
 		}
-
-		return DONE;
 	}
 
-	private void buyFromJson(String session, String json) throws IOException {
+	private String buyFromJson(String session, String json, int coins) throws IOException {
 		JsonObject object = new JsonParser().parse(json).getAsJsonObject();
 
 		JsonArray results = object.getAsJsonArray("results");
 		Iterator<JsonElement> iterator = results.iterator();
+
+		JsonArray output = new JsonArray();
 
 		while(iterator.hasNext()){
 			JsonObject resObj = iterator.next().getAsJsonObject();
@@ -79,29 +85,16 @@ public class BuyerService {
 			int sell_price = resObj.get("sell_price").getAsInt();
 
 			if(buy_price < MAX_BUY_PRICE && (buy_price * 2) < sell_price){
-				executeRequest(httpRequestFactory.buyItem(session, data_id, COUNT, buy_price + ADD_BUY_PRICE));
-			}
-		}
-	}
-
-
-	public JsonObject buyArmor(String session, JsonObject listing, int coins, int amount) {
-		JsonArray items = listing.getAsJsonArray();
-
-		Iterator<JsonElement> iterator = items.iterator();
-		while(iterator.hasNext()){
-			JsonElement item = iterator.next();
-
-			if(item.isJsonObject()){
-				int buyPrice = ((JsonObject) item).get("buyPrice").getAsInt();
-				int sellPrice = ((JsonObject) item).get("sellPrice").getAsInt();
-
-				if(coins > 0 && sellPrice > (buyPrice / 2)){
-
+				if(coins >= 0){
+					executeRequest(httpRequestFactory.buyItem(session, data_id, COUNT, buy_price + ADD_BUY_PRICE));
+					coins -= (buy_price + ADD_BUY_PRICE) * COUNT;
+					resObj.addProperty("buy_price", buy_price + ADD_BUY_PRICE);
+					output.add(resObj);
 				}
 			}
 		}
-		return null;
+
+		return output.toString();
 	}
 
 	public String executeRequest(HttpUriRequest request) throws IOException {

@@ -65,7 +65,31 @@
     </div>
 
     <div class="row">
-        <div class="col-md-6">.col-md-6</div>
+        <div class="col-md-6">
+
+            <form id="buyForm" class="form-horizontal" role="form">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        <label for="buyType" class="control-label">Type:</label>
+                        <select id="buyType" class="form-control">
+                            <option value="0">Armor</option>
+                            <option value="13">Weapon</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-4">
+                        <label for="buyType" class="control-label">Rarity:</label>
+                        <select id="buyRarity" class="form-control">
+                            <option value="3">Masterwork</option>
+                            <option value="4">Rare</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success">Buy</button>
+            </form>
+
+        </div>
         <div class="col-md-6">.col-md-6</div>
     </div>
 
