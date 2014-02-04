@@ -49,6 +49,16 @@ public class BuyerController {
 				min_price, max_price, add_price, count, profit_margin);
 	}
 
+	@RequestMapping(value = "/cancelBuy", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
+	public @ResponseBody String cancelBuy(@RequestParam String session) throws IOException {
+		return buyerService.cancelBuy(session);
+	}
+
+	@RequestMapping(value = "/cancelSell", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
+	public @ResponseBody String cancelSell(@RequestParam String session) throws IOException {
+		return buyerService.cancelSell(session);
+	}
+
 	@RequestMapping(value = "/", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
 	public ModelAndView index() {
 		return new ModelAndView("jsp/index.jsp");

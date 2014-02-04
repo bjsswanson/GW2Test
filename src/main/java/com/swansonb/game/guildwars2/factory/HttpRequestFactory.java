@@ -14,11 +14,32 @@ import java.util.List;
 @Component
 public class HttpRequestFactory {
 
+	private static final int BUY = 1;
+	private static final int SELL = 0;
+
 	private static final String SEARCH_URI = "https://tradingpost-live.ncplatform.net/ws/search.json?";
 	private static final String BUY_URI = "https://tradingpost-live.ncplatform.net/ws/item/";
+	private static final String ORDERS_URL = "https://tradingpost-live.ncplatform.net/ws/me.json?";
+	private static final String CANCEL_URL = "https://tradingpost-live.ncplatform.net/ws/item/10387/cancel.json?";
 
 	public HttpGet getListing(String session, int type, int rarity, int levelmin, int levelmax){
 		return get(getSearchUrl(type, rarity, levelmin, levelmax), session);
+	}
+
+	public HttpGet getBuyListings(String session) {
+		return get(getOrdersUrl("buy"), session);
+	}
+
+	public HttpGet getSellListings(String session) {
+		return get(getOrdersUrl("sell"), session);
+	}
+
+	public HttpPost cancelBuyOrder(String session, String listing){
+		return post(getCancelUrl(listing, BUY), session);
+	}
+
+	public HttpPost cancelSellOrder(String session, String listing){
+		return post(getCancelUrl(listing, SELL), session);
 	}
 
 	public HttpPost buyItem(String session, int item, int count, int price){
@@ -75,6 +96,25 @@ public class HttpRequestFactory {
 		return sb.toString();
 	}
 
+	private String getCancelUrl(String listing, int isBuy){
+		StringBuilder sb = new StringBuilder(CANCEL_URL);
+		sb.append("listing=");
+		sb.append(listing);
+		sb.append("&isbuy=");
+		sb.append(isBuy);
+		sb.append("&charid=undefined");
+		return sb.toString();
+	}
+
+	private String getOrdersUrl(String buySell){
+		StringBuilder sb = new StringBuilder(ORDERS_URL);
+		sb.append("time=now");
+		sb.append("&type=");
+		sb.append(buySell);
+		sb.append("&charid=&count=0");
+		return sb.toString();
+	}
+
 	private String getSearchUrl(int type, int rarity, int levelmin, int levelmax){
 		StringBuilder sb = new StringBuilder(SEARCH_URI);
 		sb.append("text=");
@@ -89,7 +129,7 @@ public class HttpRequestFactory {
 		sb.append("&offset=1");
 		sb.append("&orderby=price");
 		sb.append("&sortdescending=1");
-		sb.append("&count=100");
+		sb.append("&count=0");
 
 		return sb.toString();
 	}

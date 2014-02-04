@@ -18,12 +18,8 @@ import java.util.Iterator;
 @Service
 public class BuyerService {
 
-	public static final int COUNT = 3;
-	public static final int MAX_PRICE = 10000;
-	private static final int MIN_PRICE = 0;
-	public static final int ADD_PRICE = 20;
-	public static final String DONE = "Done.";
 	private static final String MISSING_SESSION = "Missing Session";
+	private static final String DONE = "Done.";
 	@Autowired
 	HttpClientFactory httpClientFactory;
 
@@ -34,6 +30,52 @@ public class BuyerService {
 
 	public BuyerService() {
 		this.gson = new Gson();
+	}
+
+	public String cancelBuy(String session) throws IOException {
+		if(StringUtils.isNotBlank(session)){
+			String json = executeRequest(httpRequestFactory.getBuyListings(session));
+			JsonObject object = new JsonParser().parse(json).getAsJsonObject();
+
+			JsonArray results = object.getAsJsonArray("listings");
+			Iterator<JsonElement> iterator = results.iterator();
+
+			while(iterator.hasNext()){
+				JsonObject resObj = iterator.next().getAsJsonObject();
+				String listing_id = resObj.get("listing_id").getAsString();
+				executeRequest(httpRequestFactory.cancelBuyOrder(session, listing_id));
+			}
+
+			return DONE;
+
+		} else {
+			return MISSING_SESSION;
+		}
+	}
+
+	public String cancelSell(String session) throws IOException {
+		if(StringUtils.isNotBlank(session)){
+			String json = executeRequest(httpRequestFactory.getSellListings(session));
+			JsonObject object = new JsonParser().parse(json).getAsJsonObject();
+
+			JsonArray results = object.getAsJsonArray("listings");
+			Iterator<JsonElement> iterator = results.iterator();
+
+			while(iterator.hasNext()){
+				JsonObject resObj = iterator.next().getAsJsonObject();
+				String listing_id = resObj.get("listing_id").getAsString();
+				int price = resObj.get("price").getAsInt();
+				int sell_price = resObj.get("sell_price").getAsInt();
+				if(price < sell_price){
+					executeRequest(httpRequestFactory.cancelSellOrder(session, listing_id));
+				}
+			}
+
+			return DONE;
+
+		} else {
+			return MISSING_SESSION;
+		}
 	}
 
 	public String list(String session, int type, int rarity, int min_level, int max_level) throws IOException {
