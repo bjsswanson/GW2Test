@@ -67,11 +67,14 @@
     <div class="row">
         <div class="col-md-6">
 
-            <form id="buyForm" class="form-horizontal" role="form">
+            <form id="buyForm" class="form-horizontal" role="form" method="post" action=""/>
+
+                <input id="session" type="hidden"/>
+
                 <div class="form-group">
                     <div class="col-md-4">
-                        <label for="buyType" class="control-label">Type:</label>
-                        <select id="buyType" class="form-control">
+                        <label for="type" class="control-label">Type:</label>
+                        <select id="type" class="form-control">
                             <option value="0">Armor</option>
                             <option value="13">Weapon</option>
                         </select>
@@ -79,12 +82,42 @@
                 </div>
                 <div class="form-group">
                     <div class="col-md-4">
-                        <label for="buyType" class="control-label">Rarity:</label>
-                        <select id="buyRarity" class="form-control">
+                        <label for="rarity" class="control-label">Rarity:</label>
+                        <select id="rarity" class="form-control">
                             <option value="3">Masterwork</option>
                             <option value="4">Rare</option>
                         </select>
                     </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-4">
+                        <label for="min_level" class="control-label">Min Level:</label>
+                        <input id="min_level" type="number"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-4">
+                        <label for="max_level" class="control-label">Max Level:</label>
+                        <input id="max_level" type="number"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-4">
+                        <label for="coins" class="control-label">Spend Amount:</label>
+                        <input id="coins" type="number"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                        <div class="col-md-4">
+                            <label for="min_price" class="control-label">Min Price:</label>
+                            <input id="min_price" type="number"/>
+                        </div>
+                    </div>
+                <div class="form-group">
+                        <div class="col-md-4">
+                            <label for="max_price" class="control-label">Max Price:</label>
+                            <input id="max_price" type="number"/>
+                        </div>
                 </div>
                 <button type="submit" class="btn btn-success">Buy</button>
             </form>

@@ -18,9 +18,10 @@ import java.util.Iterator;
 @Service
 public class BuyerService {
 
-	public static final int MAX_BUY_PRICE = 10000;
 	public static final int COUNT = 3;
-	public static final int ADD_BUY_PRICE = 20;
+	public static final int MAX_PRICE = 10000;
+	private static final int MIN_PRICE = 0;
+	public static final int ADD_PRICE = 20;
 	public static final String DONE = "Done.";
 	private static final String MISSING_SESSION = "Missing Session";
 	@Autowired
@@ -35,42 +36,24 @@ public class BuyerService {
 		this.gson = new Gson();
 	}
 
-	public String getArmorMasterWork15to20(String session) throws IOException {
+	public String list(String session, int type, int rarity, int min_level, int max_level) throws IOException {
 		if(StringUtils.isNotBlank(session)){
-			return executeRequest(httpRequestFactory.getListing(session, GWConstants.ARMOR, GWConstants.MASTERWORK, 15, 20));
+			return executeRequest(httpRequestFactory.getListing(session, type, rarity, min_level, max_level));
 		} else {
 			return MISSING_SESSION;
 		}
 	}
 
-	public String buy(String session, int type, int rarity, int min_level, int max_level, int coins) throws IOException {
+	public String buy(String session, int type, int rarity, int min_level, int max_level, int coins, int min_price, int max_price, int add_price, int count, float profit_margin) throws IOException {
 		if(StringUtils.isNotBlank(session)){
 			String json = executeRequest(httpRequestFactory.getListing(session, type, rarity, min_level, max_level));
-			return buyFromJson(session, json, coins);
+			return buyFromJson(session, json, coins, min_price, max_price, add_price, count, profit_margin);
 		} else {
 			return MISSING_SESSION;
 		}
 	}
 
-	public String buyArmorMasterWork15to20(String session) throws IOException {
-		if(StringUtils.isNotBlank(session)){
-			String json = executeRequest(httpRequestFactory.getListing(session, GWConstants.ARMOR, GWConstants.MASTERWORK, 15, 20));
-			return buyFromJson(session, json, Integer.MAX_VALUE);
-		} else {
-			return MISSING_SESSION;
-		}
-	}
-
-	public String buyWeaponMasterWork15to20(String session) throws IOException {
-		if(StringUtils.isNotBlank(session)){
-			String json = executeRequest(httpRequestFactory.getListing(session, GWConstants.WEAPON, GWConstants.MASTERWORK, 15, 20));
-			return buyFromJson(session, json, Integer.MAX_VALUE);
-		} else {
-			return MISSING_SESSION;
-		}
-	}
-
-	private String buyFromJson(String session, String json, int coins) throws IOException {
+	private String buyFromJson(String session, String json, int coins, int min_price, int max_price, int add_price, int count, float profit_margin) throws IOException {
 		JsonObject object = new JsonParser().parse(json).getAsJsonObject();
 
 		JsonArray results = object.getAsJsonArray("results");
@@ -84,17 +67,22 @@ public class BuyerService {
 			int buy_price = resObj.get("buy_price").getAsInt();
 			int sell_price = resObj.get("sell_price").getAsInt();
 
-			if(buy_price < MAX_BUY_PRICE && (buy_price * 2) < sell_price){
-				if(coins >= 0){
-					executeRequest(httpRequestFactory.buyItem(session, data_id, COUNT, buy_price + ADD_BUY_PRICE));
-					coins -= (buy_price + ADD_BUY_PRICE) * COUNT;
-					resObj.addProperty("buy_price", buy_price + ADD_BUY_PRICE);
+			if(meetsBuyCriteria(coins, min_price, max_price, profit_margin, buy_price, sell_price)){
+					executeRequest(httpRequestFactory.buyItem(session, data_id, count, buy_price + add_price));
+					coins -= (buy_price + add_price) * count;
+					resObj.addProperty("buy_price", buy_price + add_price);
 					output.add(resObj);
-				}
 			}
 		}
 
 		return output.toString();
+	}
+
+	private boolean meetsBuyCriteria(int coins, int min_price, int max_price, float profit_margin, int buy_price, int sell_price) {
+		return ((buy_price * profit_margin)) < (float)sell_price &&
+				buy_price > min_price &&
+				buy_price < max_price &&
+				coins >= 0;
 	}
 
 	public String executeRequest(HttpUriRequest request) throws IOException {

@@ -22,8 +22,13 @@ public class BuyerController {
 
 	@RequestMapping(value = "/listing", method = RequestMethod.GET,
 			produces = "application/json; charset=utf-8")
-	public @ResponseBody String listing(@RequestParam("session") String session) throws IOException {
-		return buyerService.getArmorMasterWork15to20(TEMP_SESSION).toString();
+	public @ResponseBody String listing(
+			@RequestParam String session,
+			@RequestParam int type,
+			@RequestParam int rarity,
+			@RequestParam int min_level,
+			@RequestParam int max_level ) throws IOException {
+		return buyerService.list(session, type, rarity, min_level, max_level);
 	}
 
 	@RequestMapping(value = "/buy", method = RequestMethod.GET,
@@ -34,20 +39,14 @@ public class BuyerController {
 	        @RequestParam int rarity,
 	        @RequestParam int min_level,
 	        @RequestParam int max_level,
-	        @RequestParam int coins) throws IOException {
-		return buyerService.buy(session, type, rarity, min_level, max_level, coins);
-	}
-
-	@RequestMapping(value = "/buyArmor", method = RequestMethod.GET,
-			produces = "application/json; charset=utf-8")
-	public @ResponseBody String buyArmor() throws IOException {
-		return buyerService.buyArmorMasterWork15to20(TEMP_SESSION);
-	}
-
-	@RequestMapping(value = "/buyWeapon", method = RequestMethod.GET,
-			produces = "application/json; charset=utf-8")
-	public @ResponseBody String buyWeapon() throws IOException {
-		return buyerService.buyWeaponMasterWork15to20(TEMP_SESSION);
+	        @RequestParam int coins,
+	        @RequestParam int min_price,
+	        @RequestParam int max_price,
+	        @RequestParam int add_price,
+	        @RequestParam int count,
+	        @RequestParam float profit_margin) throws IOException {
+		return buyerService.buy(session, type, rarity, min_level, max_level, coins,
+				min_price, max_price, add_price, count, profit_margin);
 	}
 
 	@RequestMapping(value = "/", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
