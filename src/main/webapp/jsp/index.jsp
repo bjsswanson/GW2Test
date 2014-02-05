@@ -65,20 +65,19 @@
     </div>
 
     <div class="row">
-        <div class="col-md-6">
 
-            <form id="buyForm" class="form-horizontal" role="form" />
-
+        <form id="buyForm" class="form-horizontal" role="form" />
+            <div class="col-md-2">
                 <input id="session" name="session" type="hidden"/>
 
                 <div class="form-group">
-                    <div class="col-md-4">
+                    <div>
                         <label for="coins" class="control-label">Spend Amount:</label>
                         <input id="coins" name="coins" type="number"/>
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-md-4">
+                    <div>
                         <label for="type" class="control-label">Type:</label>
                         <select id="type" name="type" class="form-control">
                             <option value="0">Armor</option>
@@ -88,7 +87,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-md-4">
+                    <div>
                         <label for="rarity" class="control-label">Rarity:</label>
                         <select id="rarity" name="rarity" class="form-control">
                             <option value="3">Masterwork</option>
@@ -98,52 +97,52 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-md-4">
+                    <div>
                         <label for="min_level" class="control-label">Min Level:</label>
                         <input id="min_level" name="min_level" type="number" value="15"/>
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-md-4">
+                    <div>
                         <label for="max_level" class="control-label">Max Level:</label>
                         <input id="max_level" name="max_level" type="number" value="20"/>
                     </div>
                 </div>
+            </div>
+            <div class="col-md-2 col-md-offset-1">
                 <div class="form-group">
-                        <div class="col-md-4">
+                        <div>
                             <label for="min_price" class="control-label">Min Price:</label>
                             <input id="min_price" name="min_price" type="number" value="1000"/>
                         </div>
                     </div>
                 <div class="form-group">
-                        <div class="col-md-4">
+                        <div>
                             <label for="max_price" class="control-label">Max Price:</label>
                             <input id="max_price" name="max_price" type="number" value="20000"/>
                         </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-md-4">
+                    <div>
                         <label for="add_price" class="control-label">Add Price:</label>
                         <input id="add_price" name="add_price" type="number" value="20" />
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-md-4">
+                    <div>
                         <label for="count" class="control-label">Count:</label>
                         <input id="count" name="count" type="number" value="3"/>
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-md-4">
+                    <div>
                         <label for="profit_margin" class="control-label">Profit Margin: </label>
                         <input id="profit_margin" name="profit_margin" type="number" value="2"/>
                     </div>
                 </div>
                 <button id="buySubmit" type="submit" class="btn btn-success">Buy</button>
-            </form>
-
-        </div>
-        <div class="col-md-6">.col-md-6</div>
+            </div>
+        </form>
     </div>
 
 </div><!-- /.container -->

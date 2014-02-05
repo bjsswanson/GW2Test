@@ -32,6 +32,34 @@ public class BuyerService {
 		this.gson = new Gson();
 	}
 
+	public String repostBuy(String session) throws IOException {
+		if(StringUtils.isNotBlank(session)){
+			String json = executeRequest(httpRequestFactory.getBuyListings(session));
+			JsonObject object = new JsonParser().parse(json).getAsJsonObject();
+
+			JsonArray results = object.getAsJsonArray("listings");
+			Iterator<JsonElement> iterator = results.iterator();
+
+			while(iterator.hasNext()){
+				JsonObject resObj = iterator.next().getAsJsonObject();
+				String listing_id = resObj.get("listing_id").getAsString();
+				int data_id = resObj.get("data_id").getAsInt();
+				int price = resObj.get("price").getAsInt();
+				int buy_price = resObj.get("buy_price").getAsInt();
+				int quantity = resObj.get("quantity").getAsInt();
+				if(buy_price < price){
+					executeRequest(httpRequestFactory.cancelBuyOrder(session, listing_id));
+					executeRequest(httpRequestFactory.buyItem(session, data_id, quantity, buy_price));
+				}
+			}
+
+			return DONE;
+
+		} else {
+			return MISSING_SESSION;
+		}
+	}
+
 	public String cancelBuy(String session) throws IOException {
 		if(StringUtils.isNotBlank(session)){
 			String json = executeRequest(httpRequestFactory.getBuyListings(session));
