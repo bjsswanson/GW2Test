@@ -20,7 +20,7 @@ public class HttpRequestFactory {
 	private static final String SEARCH_URI = "https://tradingpost-live.ncplatform.net/ws/search.json?";
 	private static final String BUY_URI = "https://tradingpost-live.ncplatform.net/ws/item/";
 	private static final String ORDERS_URL = "https://tradingpost-live.ncplatform.net/ws/me.json?";
-	private static final String CANCEL_URL = "https://tradingpost-live.ncplatform.net/ws/item/10387/cancel.json?";
+	private static final String CANCEL_URL = "https://tradingpost-live.ncplatform.net/ws/item/";
 
 	public HttpGet getListing(String session, int type, int rarity, int levelmin, int levelmax){
 		return get(getSearchUrl(type, rarity, levelmin, levelmax), session);
@@ -34,12 +34,12 @@ public class HttpRequestFactory {
 		return get(getOrdersUrl("sell"), session);
 	}
 
-	public HttpPost cancelBuyOrder(String session, String listing){
-		return post(getCancelUrl(listing, BUY), session);
+	public HttpPost cancelBuyOrder(String session, int listing, int item){
+		return post(getCancelUrl(listing, item, BUY), session);
 	}
 
-	public HttpPost cancelSellOrder(String session, String listing){
-		return post(getCancelUrl(listing, SELL), session);
+	public HttpPost cancelSellOrder(String session, int listing, int item){
+		return post(getCancelUrl(listing, item, SELL), session);
 	}
 
 	public HttpPost buyItem(String session, int item, int count, int price){
@@ -96,9 +96,11 @@ public class HttpRequestFactory {
 		return sb.toString();
 	}
 
-	private String getCancelUrl(String listing, int isBuy){
+	private String getCancelUrl(int listing, int item, int isBuy){
 		StringBuilder sb = new StringBuilder(CANCEL_URL);
-		sb.append("listing=");
+		sb.append(item);
+		sb.append("/cancel.json");
+		sb.append("?listing=");
 		sb.append(listing);
 		sb.append("&isbuy=");
 		sb.append(isBuy);
@@ -111,7 +113,7 @@ public class HttpRequestFactory {
 		sb.append("time=now");
 		sb.append("&type=");
 		sb.append(buySell);
-		sb.append("&charid=&count=0");
+		sb.append("&charid=&count=200");
 		return sb.toString();
 	}
 

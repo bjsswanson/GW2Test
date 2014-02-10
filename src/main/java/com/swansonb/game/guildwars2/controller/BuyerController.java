@@ -20,6 +20,11 @@ public class BuyerController {
 	@Autowired
 	BuyerService buyerService;
 
+	@RequestMapping(value = "/totalSellPrice", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
+	public @ResponseBody String totalSellPrice(@RequestParam String session) throws IOException {
+		return buyerService.getTotalSellPrice(session);
+	}
+
 	@RequestMapping(value = "/listing", method = RequestMethod.GET,
 			produces = "application/json; charset=utf-8")
 	public @ResponseBody String listing(
@@ -33,7 +38,7 @@ public class BuyerController {
 
 	@RequestMapping(value = "/buy", method = RequestMethod.GET,
 			produces = "application/json; charset=utf-8")
-	public @ResponseBody String buyArmor(
+	public @ResponseBody String buy(
 			@RequestParam String session,
 	        @RequestParam int type,
 	        @RequestParam int rarity,
@@ -57,6 +62,11 @@ public class BuyerController {
 	@RequestMapping(value = "/cancelSell", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
 	public @ResponseBody String cancelSell(@RequestParam String session) throws IOException {
 		return buyerService.cancelSell(session);
+	}
+
+	@RequestMapping(value = "/repostBuy", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
+	public @ResponseBody String repostBuy(@RequestParam String session, @RequestParam int add_price) throws IOException {
+		return buyerService.repostBuy(session, add_price);
 	}
 
 	@RequestMapping(value = "/", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)

@@ -66,7 +66,7 @@
 
     <div class="row">
 
-        <form id="buyForm" class="form-horizontal" role="form" />
+        <form id="buyForm" class="form-horizontal" role="form">
             <div class="col-md-2">
                 <input id="session" name="session" type="hidden"/>
 
@@ -81,6 +81,7 @@
                         <label for="type" class="control-label">Type:</label>
                         <select id="type" name="type" class="form-control">
                             <option value="0">Armor</option>
+                            <option value="15">Trinket</option>
                             <option value="17">Upgrade Component</option>
                             <option value="18">Weapon</option>
                         </select>
@@ -137,12 +138,32 @@
                 <div class="form-group">
                     <div>
                         <label for="profit_margin" class="control-label">Profit Margin: </label>
-                        <input id="profit_margin" name="profit_margin" type="number" value="2"/>
+                        <input id="profit_margin" name="profit_margin" type="number" step="any" value="2"/>
                     </div>
                 </div>
                 <button id="buySubmit" type="submit" class="btn btn-success">Buy</button>
             </div>
-        </form>
+
+            </form>
+
+            <div class="col-md-2"><form id="cancelBuyForm" role="form"><button id="cancelBuy" type="submit" class="btn btn-success">Cancel Buy</button></form></div>
+
+
+            <div class="col-md-2">
+                <form id="repostBuyForm" role="form">
+                <div>
+                    <label for="repost_add_price" class="control-label">Add Price:</label>
+                    <input id="repost_add_price" name="repost_add_price" type="number" value="20" />
+                </div>
+                <button id="repostBuy" type="submit" class="btn btn-success">Repost Buy</button>
+                </form>
+            </div>
+
+
+            <div class="col-md-2">
+                <form id="cancelSellForm" role="form"><button id="cancelSell" type="submit" class="btn btn-success">Cancel Sell</button></form>
+                <form id="totalSellPriceForm" role="form"><button id="totalSellPrice" type="submit" class="btn btn-success">Total Sell Price</button></form>
+            </div>
     </div>
 
 </div><!-- /.container -->

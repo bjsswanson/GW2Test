@@ -16,8 +16,8 @@ public class GW2Buyer {
 	public static void main(String[] args) throws URISyntaxException, IOException {
 		SpringApplication.run(com.swansonb.game.guildwars2.GW2Buyer.class, args);
 
-//		if(Desktop.isDesktopSupported()){
-//			Desktop.getDesktop().browse(new URI("http://localhost:8080"));
-//		}
+		if(Desktop.isDesktopSupported()){
+			Desktop.getDesktop().browse(new URI("http://localhost:8080"));
+		}
 	}
 }

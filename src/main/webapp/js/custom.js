@@ -7,6 +7,10 @@ GWTools.events = {
 		this.sessionFormEvent();
 		this.hideSessionSaved();
         this.buyFormEvent();
+        this.cancelBuyFormEvent();
+        this.cancelSellFormEvent();
+        this.repostBuyFormEvent();
+        this.totalSellPriceFormEvent();
 	},
 	sessionFormEvent: function(){
         $('#sessionForm').submit(function(event){
@@ -34,6 +38,30 @@ GWTools.events = {
         $('#buyForm').submit(function(event){
             event.preventDefault();
             window.open("/buy?" + $('#buyForm').serialize());
+        });
+    },
+    cancelBuyFormEvent: function(){
+        $('#cancelBuyForm').submit(function(event){
+            event.preventDefault();
+            window.open("/cancelBuy?session=" + GWTools.session);
+        });
+    },
+    cancelSellFormEvent: function(){
+        $('#cancelSellForm').submit(function(event){
+            event.preventDefault();
+            window.open("/cancelSell?session=" + GWTools.session);
+        });
+    },
+    repostBuyFormEvent: function(){
+        $('#repostBuyForm').submit(function(event){
+            event.preventDefault();
+            window.open("/repostBuy?session=" + GWTools.session + "&add_price=" + $("#repost_add_price").val());
+        });
+    },
+    totalSellPriceFormEvent: function(){
+        $('#totalSellPriceForm').submit(function(event){
+            event.preventDefault();
+            window.open("/totalSellPrice?session=" + GWTools.session);
         });
     }
 };

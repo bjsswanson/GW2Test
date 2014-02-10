@@ -3,6 +3,7 @@ package com.swansonb.game.guildwars2.services;
 import com.google.gson.*;
 import com.swansonb.game.guildwars2.factory.HttpClientFactory;
 import com.swansonb.game.guildwars2.factory.HttpRequestFactory;
+import com.swansonb.game.guildwars2.utils.BuyerUtils;
 import com.swansonb.game.guildwars2.utils.GWConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
@@ -32,7 +33,31 @@ public class BuyerService {
 		this.gson = new Gson();
 	}
 
-	public String repostBuy(String session) throws IOException {
+	public String getTotalSellPrice(String session) throws IOException {
+		if(StringUtils.isNotBlank(session)){
+			String json = executeRequest(httpRequestFactory.getSellListings(session));
+			JsonObject object = new JsonParser().parse(json).getAsJsonObject();
+
+			JsonArray results = object.getAsJsonArray("listings");
+			Iterator<JsonElement> iterator = results.iterator();
+
+			int total = 0;
+
+			while(iterator.hasNext()){
+				JsonObject resObj = iterator.next().getAsJsonObject();
+				int unit_price = resObj.get("unit_price").getAsInt();
+				int quantity = resObj.get("quantity").getAsInt();
+
+				total += unit_price * quantity;
+			}
+
+			return BuyerUtils.coinsToGold(total);
+		} else {
+			return MISSING_SESSION;
+		}
+	}
+
+	public String repostBuy(String session, int add_price) throws IOException {
 		if(StringUtils.isNotBlank(session)){
 			String json = executeRequest(httpRequestFactory.getBuyListings(session));
 			JsonObject object = new JsonParser().parse(json).getAsJsonObject();
@@ -42,14 +67,14 @@ public class BuyerService {
 
 			while(iterator.hasNext()){
 				JsonObject resObj = iterator.next().getAsJsonObject();
-				String listing_id = resObj.get("listing_id").getAsString();
+				int listing_id = resObj.get("listing_id").getAsInt();
 				int data_id = resObj.get("data_id").getAsInt();
 				int price = resObj.get("price").getAsInt();
-				int buy_price = resObj.get("buy_price").getAsInt();
+				int buy_price = resObj.get("unit_price").getAsInt();
 				int quantity = resObj.get("quantity").getAsInt();
 				if(buy_price < price){
-					executeRequest(httpRequestFactory.cancelBuyOrder(session, listing_id));
-					executeRequest(httpRequestFactory.buyItem(session, data_id, quantity, buy_price));
+					executeRequest(httpRequestFactory.cancelBuyOrder(session, listing_id, data_id));
+					executeRequest(httpRequestFactory.buyItem(session, data_id, quantity, buy_price + add_price));
 				}
 			}
 
@@ -70,8 +95,9 @@ public class BuyerService {
 
 			while(iterator.hasNext()){
 				JsonObject resObj = iterator.next().getAsJsonObject();
-				String listing_id = resObj.get("listing_id").getAsString();
-				executeRequest(httpRequestFactory.cancelBuyOrder(session, listing_id));
+				int listing_id = resObj.get("listing_id").getAsInt();
+				int data_id = resObj.get("data_id").getAsInt();
+				executeRequest(httpRequestFactory.cancelBuyOrder(session, listing_id, data_id));
 			}
 
 			return DONE;
@@ -91,11 +117,12 @@ public class BuyerService {
 
 			while(iterator.hasNext()){
 				JsonObject resObj = iterator.next().getAsJsonObject();
-				String listing_id = resObj.get("listing_id").getAsString();
-				int price = resObj.get("price").getAsInt();
+				int listing_id = resObj.get("listing_id").getAsInt();
+				int data_id = resObj.get("data_id").getAsInt();
+				int unit_price = resObj.get("unit_price").getAsInt();
 				int sell_price = resObj.get("sell_price").getAsInt();
-				if(price < sell_price){
-					executeRequest(httpRequestFactory.cancelSellOrder(session, listing_id));
+				if(sell_price < unit_price){
+					executeRequest(httpRequestFactory.cancelSellOrder(session, listing_id, data_id));
 				}
 			}
 
