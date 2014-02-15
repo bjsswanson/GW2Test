@@ -68,12 +68,12 @@ GWTools.events = {
 
         $('#buyRareArmorForm').submit(function(event){
             event.preventDefault();
-            window.open("/buy?session=" + GWTools.session + "&coins=" + $("#saved_coins").val() + "&type=0&rarity=4&min_level=50&max_level=60&min_price=1000&max_price=20000&add_price=20&count=3&profit_margin=2");
+            window.open("/buy?session=" + GWTools.session + "&coins=" + $("#saved_coins").val() + "&type=0&rarity=4&min_level=50&max_level=60&min_price=1000&max_price=20000&add_price=20&count=1&profit_margin=2");
         });
 
         $('#buyRareWeaponForm').submit(function(event){
             event.preventDefault();
-            window.open("/buy?session=" + GWTools.session +"&coins=" + $("#saved_coins").val() + "&type=18&rarity=4&min_level=50&max_level=60&min_price=1000&max_price=20000&add_price=20&count=3&profit_margin=2");
+            window.open("/buy?session=" + GWTools.session +"&coins=" + $("#saved_coins").val() + "&type=18&rarity=4&min_level=50&max_level=60&min_price=1000&max_price=20000&add_price=20&count=1&profit_margin=2");
         });
     }
 };

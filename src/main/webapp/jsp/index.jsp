@@ -99,7 +99,7 @@
                 </div>
                 <div class="form-group">
                     <label for="max_level" class="control-label">Max Level:</label>
-                    <input id="max_level" name="max_level" type="number" value="20"/>
+                    <input id="max_level" name="max_level" type="number" value="60"/>
                 </div>
             </div>
             <div class="col-md-2 col-md-offset-1">
