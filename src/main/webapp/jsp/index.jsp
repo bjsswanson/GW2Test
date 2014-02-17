@@ -74,7 +74,7 @@
 
                 <div class="form-group">
                     <label for="coins" class="control-label">Spend Amount:</label>
-                    <input id="coins" name="coins" type="number"/>
+                    <input id="coins" name="coins" type="number" value="500000"/>
                 </div>
                 <div class="form-group">
                     <label for="type" class="control-label">Type:</label>
@@ -132,6 +132,15 @@
 
         <div class="col-md-2 col-md-offset-2">
             <div class="form-group">
+                <form id="totalBuyPriceForm" role="form">
+                    <div class="form-group">
+                        <button id="totalBuyPrice" type="submit" class="btn btn-success">
+                            Calculate Total Buy Price
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="form-group">
                 <form id="cancelBuyForm" role="form">
                     <button id="cancelBuy" type="submit" class="btn btn-success">Cancel All Buy Orders</button>
                 </form>
@@ -167,7 +176,7 @@
         <div class="col-md-2 col-lg-offset-7">
             <div class="form-group">
                 <label for="saved_coins" class="control-label">Spend Amount:</label>
-                <input id="saved_coins" name="saved_coins" type="number" value="500000"/>
+                <input id="saved_coins" name="saved_coins" type="number" value="800000"/>
             </div>
 
             <form id="buyMasterworkArmorForm" role="form">

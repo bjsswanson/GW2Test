@@ -33,6 +33,30 @@ public class BuyerService {
 		this.gson = new Gson();
 	}
 
+	public String getTotalBuyPrice(String session) throws IOException {
+		if(StringUtils.isNotBlank(session)){
+			String json = executeRequest(httpRequestFactory.getBuyListings(session));
+			JsonObject object = new JsonParser().parse(json).getAsJsonObject();
+
+			JsonArray results = object.getAsJsonArray("listings");
+			Iterator<JsonElement> iterator = results.iterator();
+
+			int total = 0;
+
+			while(iterator.hasNext()){
+				JsonObject resObj = iterator.next().getAsJsonObject();
+				int unit_price = resObj.get("unit_price").getAsInt();
+				int quantity = resObj.get("quantity").getAsInt();
+
+				total += unit_price * quantity;
+			}
+
+			return BuyerUtils.coinsToGold(total);
+		} else {
+			return MISSING_SESSION;
+		}
+	}
+
 	public String getTotalSellPrice(String session) throws IOException {
 		if(StringUtils.isNotBlank(session)){
 			String json = executeRequest(httpRequestFactory.getSellListings(session));

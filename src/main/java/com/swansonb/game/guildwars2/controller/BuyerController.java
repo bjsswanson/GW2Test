@@ -20,6 +20,12 @@ public class BuyerController {
 	@Autowired
 	BuyerService buyerService;
 
+	@RequestMapping(value = "/totalBuyPrice", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
+	public @ResponseBody String totalBuyPrice(@RequestParam String session) throws IOException {
+		return buyerService.getTotalBuyPrice(session);
+	}
+
+
 	@RequestMapping(value = "/totalSellPrice", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
 	public @ResponseBody String totalSellPrice(@RequestParam String session) throws IOException {
 		return buyerService.getTotalSellPrice(session);

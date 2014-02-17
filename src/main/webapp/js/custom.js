@@ -36,6 +36,11 @@ GWTools.events = {
             window.open("/buy?" + $('#buyForm').serialize());
         });
 
+        $('#totalBuyPriceForm').submit(function(event){
+            event.preventDefault();
+            window.open("/totalBuyPrice?session=" + GWTools.session);
+        });
+
         $('#cancelBuyForm').submit(function(event){
             event.preventDefault();
             window.open("/cancelBuy?session=" + GWTools.session);
@@ -58,12 +63,12 @@ GWTools.events = {
 
         $('#buyMasterworkArmorForm').submit(function(event){
             event.preventDefault();
-            window.open("/buy?session=" + GWTools.session + "&coins=" + $("#saved_coins").val() + "&type=0&rarity=3&min_level=15&max_level=60&min_price=1000&max_price=20000&add_price=20&count=3&profit_margin=2");
+            window.open("/buy?session=" + GWTools.session + "&coins=" + $("#saved_coins").val() + "&type=0&rarity=3&min_level=15&max_level=60&min_price=1000&max_price=20000&add_price=20&count=5&profit_margin=2");
         });
 
         $('#buyMasterworkWeaponForm').submit(function(event){
             event.preventDefault();
-            window.open("/buy?session=" + GWTools.session +"&coins=" + $("#saved_coins").val() + "&type=18&rarity=3&min_level=15&max_level=60&min_price=1000&max_price=20000&add_price=20&count=3&profit_margin=2");
+            window.open("/buy?session=" + GWTools.session +"&coins=" + $("#saved_coins").val() + "&type=18&rarity=3&min_level=15&max_level=60&min_price=1000&max_price=20000&add_price=20&count=5&profit_margin=2");
         });
 
         $('#buyRareArmorForm').submit(function(event){
