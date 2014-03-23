@@ -9,6 +9,8 @@ import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.impl.client.DecompressingHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
@@ -45,7 +47,7 @@ public class HttpClientFactory {
 			ctx.init(null, new TrustManager[]{tm}, null);
 			org.apache.http.conn.ssl.SSLSocketFactory ssf = new org.apache.http.conn.ssl.SSLSocketFactory(ctx);
 			ssf.setHostnameVerifier(verifier);
-			ClientConnectionManager ccm = base.getConnectionManager();
+			ClientConnectionManager ccm = new PoolingClientConnectionManager();
 			SchemeRegistry sr = ccm.getSchemeRegistry();
 			sr.register(new Scheme("https", ssf, 443));
 			return new DefaultHttpClient(ccm, base.getParams());

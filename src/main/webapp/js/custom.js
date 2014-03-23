@@ -13,7 +13,9 @@ GWTools.events = {
             event.preventDefault();
 
             var session = $('#sessionInput').val();
-            if(session != undefined && session.length > 0);{
+
+            if(session != undefined && session.length > 0){
+                session = session.substr(session.indexOf("=") + 1)
                 $('#sessionText').html(session);
                 $('#session').prop("value", session);
                 GWTools.session = session;
