@@ -15,22 +15,29 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 public class BuyerService {
 
 	private static final String MISSING_SESSION = "Missing Session";
 	private static final String DONE = "Done.";
+	private static final int N_THREADS = 4;
 	@Autowired
 	HttpClientFactory httpClientFactory;
 
 	@Autowired
 	HttpRequestFactory httpRequestFactory;
 
+	ExecutorService executor;
+
+
 	Gson gson;
 
 	public BuyerService() {
 		this.gson = new Gson();
+		this.executor = Executors.newFixedThreadPool(N_THREADS);
 	}
 
 	public String getTotalBuyPrice(String session) throws IOException {
@@ -97,8 +104,8 @@ public class BuyerService {
 				int buy_price = resObj.get("unit_price").getAsInt();
 				int quantity = resObj.get("quantity").getAsInt();
 				if(buy_price < price){
-					executeRequest(httpRequestFactory.cancelBuyOrder(session, listing_id, data_id));
-					executeRequest(httpRequestFactory.buyItem(session, data_id, quantity, buy_price + add_price));
+					executeAsyncRequest(httpRequestFactory.cancelBuyOrder(session, listing_id, data_id));
+					executeAsyncRequest(httpRequestFactory.buyItem(session, data_id, quantity, buy_price + add_price));
 				}
 			}
 
@@ -121,7 +128,7 @@ public class BuyerService {
 				JsonObject resObj = iterator.next().getAsJsonObject();
 				int listing_id = resObj.get("listing_id").getAsInt();
 				int data_id = resObj.get("data_id").getAsInt();
-				executeRequest(httpRequestFactory.cancelBuyOrder(session, listing_id, data_id));
+				executeAsyncRequest(httpRequestFactory.cancelBuyOrder(session, listing_id, data_id));
 			}
 
 			return DONE;
@@ -146,7 +153,7 @@ public class BuyerService {
 				int unit_price = resObj.get("unit_price").getAsInt();
 				int sell_price = resObj.get("sell_price").getAsInt();
 				if(sell_price < unit_price){
-					executeRequest(httpRequestFactory.cancelSellOrder(session, listing_id, data_id));
+					executeAsyncRequest(httpRequestFactory.cancelSellOrder(session, listing_id, data_id));
 				}
 			}
 
@@ -189,7 +196,7 @@ public class BuyerService {
 			int sell_price = resObj.get("sell_price").getAsInt();
 
 			if(meetsBuyCriteria(coins, min_price, max_price, profit_margin, buy_price, sell_price)){
-					executeRequest(httpRequestFactory.buyItem(session, data_id, count, buy_price + add_price));
+					executeAsyncRequest(httpRequestFactory.buyItem(session, data_id, count, buy_price + add_price));
 					coins -= (buy_price + add_price) * count;
 					resObj.addProperty("buy_price", buy_price + add_price);
 					output.add(resObj);
@@ -212,4 +219,31 @@ public class BuyerService {
 		return EntityUtils.toString(execute.getEntity());
 	}
 
+	public String executeAsyncRequest(HttpUriRequest request) throws IOException {
+		executor.execute(new RequestRunner(httpClientFactory, request));
+		return DONE;
+	}
+
+
+	class RequestRunner implements Runnable {
+
+		private HttpClientFactory clientFactory;
+		private HttpUriRequest request;
+
+		public RequestRunner(HttpClientFactory clientFactory, HttpUriRequest request){
+			this.clientFactory = clientFactory;
+			this.request = request;
+		}
+
+		@Override
+		public void run() {
+			HttpClient client = clientFactory.getClient();
+			try {
+				HttpResponse response = client.execute(request);
+				System.out.println("BUY: " + EntityUtils.toString(response.getEntity()));
+			} catch (IOException e){
+				System.err.println(e.getMessage());
+			}
+		}
+	}
 }
